@@ -16,7 +16,7 @@ Ce travail pratique vise les objectifs suivants :
 
 ### Préparation et outils nécessaires
 
-La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/IMG-setr_h2020.zip).
+La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2021.v1.img.zip).
 
 La première des tâches à réaliser est de démarrer le Raspberry Pi Zero W, de mettre en place sa configuration initiale et de vous assurer de son bon fonctionnement. Par la suite, vous devrez installer sur votre ordinateur l'environnement de développement et de compilation croisée qui vous servira tout au long de la session. 
 
@@ -66,17 +66,35 @@ $ ssh-keygen -t rsa -b 4096 -C "ecrivez_votre_nom_ici"
 $ ssh-copy-id pi@adresse_ip_de_votre_raspberry_pi
 ```
 
-Nous recommandons finalement l'[installation et l'utilisation d'un résolveur DNS](duckdns.html) tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session et de l'endroit où vous êtes.
+#### Configuration d'un résolveur DNS (optionnel)
+
+Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session.
+
+Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
+
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://raw.githubusercontent.com/setr-ulaval/labo1-h21/gh-pages/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+
+```
+#!/bin/bash
+DUCKDNS_LOCALIP=`hostname -I`
+DUCKDNS_TOKEN=ECRIRE VOTRE TOKEN DUCKDNS ICI
+DUCKDNS_DOMAINS=ECRIRE VOTRE DOMAINS DUCKDNS ICI
+DUCKDNS_LOGFILE=/var/log/duckdns.log
+echo url="https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=$DUCKDNS_LOCALIP" | curl -k -o $DUCKDNS_LOGFILE -K -
+```
+
+Changez les permissions permettant l'exécution du script avec la commande `sudo chmod +x /usr/local/bin/duckdns.sh`.
+
+Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez ajouter la ligne `/usr/local/bin/duckdns.sh` au fichier `/etc/rc.local`, juste avant `exit 0`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
+
 
 #### Installation de la machine virtuelle de développement
 
-Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez trois options :
+Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
-* Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés;
-* Télécharger une machine virtuelle VirtualBox à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/VM-setr_h2020.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+<!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
+* Télécharger une machine virtuelle VirtualBox à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2021.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes.
-
-
 
 ### Installation de l'environnement de compilation croisée
 
@@ -125,7 +143,7 @@ $ cd ct-config-rpi-zero
 Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
-$ wget -O .config wcours.gel.ulaval.ca/GIF3004/.config
+$ wget -O .config https://raw.githubusercontent.com/setr-ulaval/labo1-h21/gh-pages/etc/.config
 ```
 
 Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
@@ -136,21 +154,22 @@ $ ct-ng menuconfig
 
 Vous devriez alors obtenir une interface de ce type :
 
-<img src="img/labo1/ct_im1.png" style="width:510px"/>
+<img src="img/ct_im1.png" style="width:510px"/>
 
 > **Important** : suivez _scrupuleusement_ les instructions suivantes. Tout manquement risque d'entraîner des erreurs ultérieures difficiles à interpréter et à corriger.
 
 Allez dans la section _Paths and misc options_ et remplacez :
 
 * _Prefix directory_ : `${HOME}/arm-cross-comp-env/${CT_TARGET}` (il est important de le faire, car les scripts de compilation fournis assument ce chemin précis)
-* **Si vous utilisez un ordinateur du 0105** : Sur ces ordinateurs, il faut utiliser un dossier temporaire dédié et non pas l'espace de votre compte. Dans l'option _Working directory_. Remplacez donc `${CT_TOP_DIR}/.build` par `/gif3004/.build`.
 * _Log to a file_ (tout en bas): désactivez l'option
-
+<!--- * **Si vous utilisez un ordinateur du 0105** : Sur ces ordinateurs, il faut utiliser un dossier temporaire dédié et non pas l'espace de votre compte. Dans l'option _Working directory_. Remplacez donc `${CT_TOP_DIR}/.build` par `/gif3004/.build`.-->
 <!--- * _Patches origin_ : `Bundled only` (**très important**, sinon vous vous retrouverez avec une longue suite d'erreurs à la compilation) -->
 
-À gauche, la configuration requise **sur votre machine virtuelle ou votre ordinateur**. À droite, la configuration requise **sur un ordinateur du 0105**.
-<img src="img/labo1/ct_im2.png" style="width:510px"/> 
-<img src="img/labo1/ct_im4.png" style="width:510px"/>
+Voici la configuration requise sur votre machine virtuelle ou votre ordinateur.
+<img src="img/ct_im2.png" style="width:510px"/> 
+
+<!--- À droite, la configuration requise **sur un ordinateur du 0105**.-->
+<!--- <img src="img/ct_im4.png" style="width:510px"/>-->
 
 <!--- Dans la section _C compiler_, remplacez les valeurs suivantes :
 
@@ -159,7 +178,7 @@ Allez dans la section _Paths and misc options_ et remplacez :
  * _Core gcc extra config_ : **retirer** `--with-arch=armv6` (autrement dit, doit contenir seulement `--with-float=hard --with-fpu=vfp`)
 * _Gcc extra config_ : **retirer** `--with-arch=armv6` (autrement dit, doit contenir seulement `--with-float=hard --with-fpu=vfp`)
 
-<img src="img/labo1/ct_im2b.png" style="width:510px"/>-->
+<img src="img/ct_im2b.png" style="width:510px"/>-->
 
 <!---
 Dans la section _Target options_, nous allons spécifier au compilateur les caractéristiques exactes du matériel, de manière à ce qu'il puisse optimiser au maximum le code binaire généré. Remplacez les valeurs suivantes :
@@ -167,7 +186,7 @@ Dans la section _Target options_, nous allons spécifier au compilateur les cara
 * _Target archicture_ : `arm`
 * _Emit assembly for CPU_ : `arm1176jz-s`
 
-<img src="img/labo1/ct_im3.png" style="width:510px"/>
+<img src="img/ct_im3.png" style="width:510px"/>
 -->
 
 Dans la section _Operating System_, remplacez :
@@ -177,7 +196,7 @@ Dans la section _Operating System_, remplacez :
 
 Dans la dernière étape, `chemin vers les sources du kernel` doit être le chemin absolu vers le dossier contenant les sources du noyau Linux utilisé sur le Raspberry Pi. Celui-ci peut-être situé à des endroits différents selon votre installation:
 
-* Si vous travaillez *sur les ordinateurs du laboratoire 0105*, le chemin est `/opt/rPi/linux-rpi-4.19.y-rt`
+<!--- * Si vous travaillez *sur les ordinateurs du laboratoire 0105*, le chemin est `/opt/rPi/linux-rpi-4.19.y-rt` -->
 * Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-4.19.y-rt`
 * Si vous travaillez *sur votre propre ordinateur*, téléchargez [l'archive suivante](http://wcours.gel.ulaval.ca/GIF3004/linux.tar), décompressez-la et indiquez son chemin absolu.
 
@@ -196,7 +215,7 @@ Dans la section _Debug facilities_ :
 * Activez `gdb` et `strace`
 * Allez ensuite dans les options de configuration de `gdb` (la touche Espace active ou désactive, la touche Entrée permet d'entrer dans les options) et _désactivez_ l'élément `Enable python scripting`
 
-<img src="img/labo1/ct_im5.png" style="width:510px"/>
+<img src="img/ct_im5.png" style="width:510px"/>
 
 N'oubliez pas d'enregistrer votre configuration (utilisez les flèches horizontales du clavier pour vous déplacer dans le menu du bas) puis quittez l'utilitaire.
 
@@ -292,12 +311,12 @@ Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://code.v
 
 Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++" et installez le premier résultat.
 
-<img src="img/labo1/vsc_1.png" style="width:410px"/> 
-<img src="img/labo1/vsc_2.png" style="width:410px"/>
+<img src="img/vsc_1.png" style="width:410px"/> 
+<img src="img/vsc_2.png" style="width:410px"/>
 
 Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de VSC, cliquez sur le bouton `Reload` pour le faire.
 
-<img src="img/labo1/vsc_3.png" style="width:410px"/>
+<img src="img/vsc_3.png" style="width:410px"/>
 
 
 > **Vous devez installer les extensions suivantes :** `C/C++`, `CMake`, `CMake Tools` et `Native Debug`.
@@ -309,7 +328,7 @@ Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de V
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
 ```
-$ git clone https://GIF3004@bitbucket.org/GIF3004/laboratoire1.git
+$ git clone https://github.com/setr-ulaval/labo1-h21.git
 ```
 
 Rendez également le script `syncAndStartGDB.sh` exécutable :
@@ -318,13 +337,13 @@ Rendez également le script `syncAndStartGDB.sh` exécutable :
 $ chmod +x syncAndStartGDB.sh
 ```
 
-Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _laboratoire1_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h21_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
 
 <!--- #### Configuration des répertoires de recherche d'en-têtes
 
 VSC (et son extension C/C++) fournit plusieurs utilitaires pour faciliter la programmation. Pour les utiliser au maximum, il faut indiquer à VSC où aller chercher les fichiers _headers_. Dans VSC, allez dans le menu `Afficher`, puis `Palette de commandes`. Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `C/Cpp` puis sélectionnez `C/Cpp: Edit Configurations`. Dans le fichier qui s'ouvre, repérez la section concernant Linux, puis, dans l'option "IncludePaths", ajoutez le chemin complet vers le répertoire `sysroot/usr/include`. Par exemple, si vous utilisez la machine virtuelle fournie, le fichier de configuration devrait ressembler à celui-ci :
 
-<img src="img/labo1/vsc_incpaths.png" style="width:710px"/>
+<img src="img/vsc_incpaths.png" style="width:710px"/>
 -->
 
 #### Compilation croisée
@@ -355,11 +374,11 @@ Finalement, vous devez corriger le code de manière à ce que GCC ne renvoie plu
 
 Une fois cela fait, vous devez *profiler* le programme. Pour ce faire, activez d'abord la sortie d'information de profilage en allant dans les options du projet :
 
-<img src="img/labo1/config_gprof.png" style="width:510px"/>
+<img src="img/config_gprof.png" style="width:510px"/>
 
 Puis exécutez le programme. Cela devrait produire un fichier nommé *gmon.out* dans le répertoire $HOME du Raspberry Pi. Vous pouvez par la suite y accéder avec Eclipse (utilisez la *perspective Remote Systems*) et l'ouvrir afin de consulter les informations de profilage :
 
-<img src="img/labo1/prof_out.png" style="width:310px"/>
+<img src="img/prof_out.png" style="width:310px"/>
 
 Au vu des résultats de profilage obtenus, pouvez-vous donner le nombre d'appels à la fonction de comparaison lorsque vous faites appel au tri par insertion (fonction *maFonctionDeTri*), avec les bogues corrigés?
 
@@ -368,19 +387,19 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ### Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques. Cette évaluation sera faite lors des séances de laboratoire du **25 janvier 2019** et du **1er février 2019**. Ce travail compte pour **5%** de la note totale du cours.
+Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques dans une visioconférence Zoom. Cette évaluation sera faite lors des séances de laboratoire du **29 janvier 2021** et du **5 février 2021**. Ce travail compte pour **5%** de la note totale du cours.
 
-Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts) :
+Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
 * (4 pts) Raspberry Pi fonctionnel, y compris à distance (via SSH);
 * (6 pts) Chaîne de compilation croisée correctement construite et installée dans `$HOME/arm-cross-comp-env`, capacité à produire un binaire ARM;
 * (2 pts) Visual Studio Code installé et fonctionnel, débogage à distance utilisable;
-* (6 pts) Programme débogué : le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
-* (2 pts) Programme corrigé : le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
+* (6 pts) Programme débogué: le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
+* (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
 
 ### Ressources et lectures connexes
 
-* [Configuration de Duck DNS](duckdns.html) pour configuration de DNS dynamique avec image du cours.
+* [Duck DNS](https://www.duckdns.org/)
 * La [documentation de Raspbian](https://www.raspbian.org/RaspbianDocumentation), la distribution Linux sur laquelle est basée l'image du cours.
 * La [documentation de GCC](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html) à propos des messages d'avertissement.
 * La [documentation de CrossTool-NG](https://crosstool-ng.github.io/docs/), que nous utilisons pour générer la chaîne de compilation.
