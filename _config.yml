@@ -1,5 +1,5 @@
 theme: jekyll-theme-minimal
 title: Laboratoire 1
 description: Énoncé du laboratoire 1
-logo: img/logo-setr.png
-show_downloads: "false"
+logo: https://setr-ulaval.github.io/labo1-h21/img/logo-setr.png
+show_downloads: false
