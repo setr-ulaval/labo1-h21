@@ -1,5 +1,5 @@
 markdown: kramdown
-theme: minimal-mistakes-jekyll
+theme: jekyll-theme-minimal
 classes: wide
 layout: single
 title: "GIF-3004 : Laboratoire 1"

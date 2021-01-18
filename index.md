@@ -184,6 +184,7 @@ Allez dans la section _Paths and misc options_ et remplacez :
 <!--- * _Patches origin_ : `Bundled only` (**très important**, sinon vous vous retrouverez avec une longue suite d'erreurs à la compilation) -->
 
 Voici la configuration requise sur votre machine virtuelle ou votre ordinateur.
+
 <img src="img/ct_im2.png" style="width:510px"/> 
 
 <!--- À droite, la configuration requise **sur un ordinateur du 0105**.-->
