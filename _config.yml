@@ -1,6 +1,8 @@
+markdown: kramdown
 theme: jekyll-theme-minimal
+classes: wide
+layout: single
 title: "GIF-3004 : Laboratoire 1"
 description: "Professeur : Christian Gagné"
 logo: https://setr-ulaval.github.io/img/UL-logo.svg
 show_downloads: false
-markdown: kramdown
