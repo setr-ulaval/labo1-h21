@@ -1,7 +1,10 @@
-# Laboratoire 1 : Construction d'une chaîne de compilation pour Raspberry Pi Zero W #
+# Systèmes embarqués temps réel - GIF-3004
 
-## Systèmes embarqués temps réel (GIF-3004) ##
+## Laboratoire 1 : Construction d'une chaîne de compilation pour Raspberry Pi Zero W
 
+[[_TOC_]]
+
+---
 
 ### Objectifs
 
@@ -13,8 +16,9 @@ Ce travail pratique vise les objectifs suivants :
 4. Analyser et déboguer un code C simple;
 5. Se familiariser avec l'utilisation du Raspberry Pi Zero W.
 
+---
 
-### Préparation et outils nécessaires
+### Préparation du Raspberry Pi
 
 La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2021.v1.img.zip).
 
@@ -32,6 +36,13 @@ Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet eff
 
 Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel).
 
+Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connecte à votre réseau sans fil. La façon la plus simple est d'utiliser l'outil `raspi-config`.
+```
+sudo raspi-config
+```
+Sélectionnez _Localisation Options_ dans le menu et ensuite _Change wireless country_ pour configurer correctement le pays. Vous pourrez alors préciser le SSID et le mot de passe de votre réseau dans l'outil. 
+
+<!---
 Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
 
 ```
@@ -54,6 +65,7 @@ Si elle est absente, veuillez l'ajouter. Lors du premier démarrage, éditez les
 
 * Dans le champ _identity_, écrivez votre IDUL@ulaval.ca
 * Dans le champ _password_, écrivez votre NIP
+-->
 
 Par la suite, redémarrez le Raspberry Pi et vérifiez que vous pouvez vous connecter à distance via [SSH](https://chrisjean.com/ssh-tutorial-for-ubuntu-linux/). Nous vous suggérons de mettre en place une authentification par clé publique, pour vous éviter de devoir réécrire le même mot de passe à chaque connexion :
 
@@ -72,7 +84,7 @@ Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
-Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://raw.githubusercontent.com/setr-ulaval/labo1-h21/gh-pages/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h21/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
 
 ```
 #!/bin/bash
@@ -87,14 +99,17 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 
 Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez ajouter la ligne `/usr/local/bin/duckdns.sh` au fichier `/etc/rc.local`, juste avant `exit 0`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
 
+---
 
-#### Installation de la machine virtuelle de développement
+### Installation de la machine virtuelle de développement
 
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
 <!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
-* Télécharger une machine virtuelle VirtualBox à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2021.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2021.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes.
+
+---
 
 ### Installation de l'environnement de compilation croisée
 
@@ -143,7 +158,7 @@ $ cd ct-config-rpi-zero
 Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
-$ wget -O .config https://raw.githubusercontent.com/setr-ulaval/labo1-h21/gh-pages/etc/.config
+$ wget -O .config https://setr-ulaval.github.io/labo1-h21/etc/ct-ng-config
 ```
 
 Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
@@ -302,12 +317,13 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 Nous réutiliserons cette configuration générique pour tous les projets du cours. Nous verrons plus loin comment la lier aux dits projets.
 
+---
 
 ### Configuration du projet du TP1
 
 Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://code.visualstudio.com/updates/v1_19) (ci-après abbrévié VSC). Utilisez la version 1.19 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
-### Installer les extensions requises
+#### Installer les extensions requises
 
 Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++" et installez le premier résultat.
 
@@ -331,13 +347,13 @@ Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossie
 $ git clone https://github.com/setr-ulaval/labo1-h21.git
 ```
 
-Rendez également le script `syncAndStartGDB.sh` exécutable :
+Rendez également le script `src/syncAndStartGDB.sh` exécutable :
 
 ```
-$ chmod +x syncAndStartGDB.sh
+$ chmod +x src/syncAndStartGDB.sh
 ```
 
-Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h21_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h21/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
 
 <!--- #### Configuration des répertoires de recherche d'en-têtes
 
@@ -384,6 +400,7 @@ Au vu des résultats de profilage obtenus, pouvez-vous donner le nombre d'appels
 
 Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de la liste différente, et refaites un profilage. Obtenez-vous des résultats différents? Pourquoi?-->
 
+---
 
 ### Modalités d'évaluation
 
@@ -396,6 +413,8 @@ Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pt
 * (2 pts) Visual Studio Code installé et fonctionnel, débogage à distance utilisable;
 * (6 pts) Programme débogué: le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
 * (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
+
+---
 
 ### Ressources et lectures connexes
 
