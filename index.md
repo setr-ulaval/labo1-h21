@@ -2,7 +2,7 @@
 
 ## Laboratoire 1 : Construction d'une chaîne de compilation pour Raspberry Pi Zero W
 
-[[_TOC_]]
+{:toc}
 
 ---
 
