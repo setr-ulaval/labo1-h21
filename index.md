@@ -41,7 +41,9 @@ Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connec
 ```
 sudo raspi-config
 ```
-Sélectionnez _Localisation Options_ dans le menu et ensuite _Change wireless country_ pour configurer correctement le pays. Vous pourrez alors préciser le SSID et le mot de passe de votre réseau dans l'outil. 
+Sélectionnez _Localisation Options_ dans le menu et ensuite _WLAN Country_ pour configurer correctement le pays. 
+Il faut ensuite sélectionner dans le menu principal _System Options_ puis _Wireless LAN_, on vous demandera alors de saisir le SSID et le mot de passe de la connection que vous souhaitez utiliser.
+Après avoir saisi saisi ces données, rebootez et utilisez la commande `ifconfig` pour vérifier que vous êtes connecté et connaître votre adresse IP.
 
 <!---
 Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
