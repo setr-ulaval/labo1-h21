@@ -132,7 +132,7 @@ Notez que la compilation de cet environnement peut prendre un certain temps.
 Pour installer Crosstool-NG, récupérez d'abord la version utilisée dans le cours, puis exécutez le script `bootstrap` :
 
 ```
-$ git clone ssh://votre_idul@pika.gel.ulaval.ca/depots/2020/h/GIF3004/crosstool-ng
+$ git clone https://github.com/setr-ulaval/crosstool-ng.git
 $ cd crosstool-ng
 $ ./bootstrap
 ```
