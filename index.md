@@ -6,7 +6,7 @@
 
 ---
 
-### Objectifs
+### 1) Objectifs
 
 Ce travail pratique vise les objectifs suivants :
 
@@ -18,7 +18,7 @@ Ce travail pratique vise les objectifs suivants :
 
 ---
 
-### Préparation du Raspberry Pi
+### 2) Préparation du Raspberry Pi
 
 La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2021.v1.img.zip).
 
@@ -26,8 +26,7 @@ La première des tâches à réaliser est de démarrer le Raspberry Pi Zero W, d
 
 > **Important :** le Raspberry Pi étant un ordinateur à part entière, il est techniquement possible de n'utiliser que ce dernier et y travailler localement en se passant de l'environnement de développement à distance. Cela n'est toutefois pas représentatif du développement des systèmes embarqués en pratique, où il est souvent impossible de travailler directement sur le matériel cible, que ce soit par manque de puissance ou par d'autres problèmes pratiques (pensons par exemple à un Raspberry Pi embarqué dans un dispositif lourd et encombrant). De plus, pour beaucoup de travaux, la puissance limitée du Raspberry Pi Zero W et son nombre de ports limité rendraient malaisée une telle utilisation. Pour cette raison, dans le cadre du cours, *il vous est interdit d'utiliser le Raspberry Pi de cette manière*, sauf lorsque qu'expressément mentionné autrement dans un énoncé ou autorisé par le professeur.
 
-
-#### Premier démarrage
+#### 2.1) Mot de passe
 
 Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet effet sur le Raspberry Pi. Branchez un écran (une sortie HDMI est disponible, n'oubliez pas d'utiliser le convertisseur mini-HDMI vers HDMI) ainsi qu'un clavier (utilisez la prise USB _la plus proche du port HDMI_ pour brancher le clavier et la plus éloignée pour l'alimentation). Vous devrez d'abord vous authentifier avec le compte par défaut :
 
@@ -35,6 +34,8 @@ Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet eff
 * **Mot de passe** : _gif3004_
 
 Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel).
+
+#### 2.2) Réseau sans fil
 
 Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connecte à votre réseau sans fil. La façon la plus simple est d'utiliser l'outil `raspi-config`.
 ```
@@ -67,6 +68,8 @@ Si elle est absente, veuillez l'ajouter. Lors du premier démarrage, éditez les
 * Dans le champ _password_, écrivez votre NIP
 -->
 
+#### 2.3) Accès par SSH
+
 Par la suite, redémarrez le Raspberry Pi et vérifiez que vous pouvez vous connecter à distance via [SSH](https://chrisjean.com/ssh-tutorial-for-ubuntu-linux/). Nous vous suggérons de mettre en place une authentification par clé publique, pour vous éviter de devoir réécrire le même mot de passe à chaque connexion :
 
 ```
@@ -78,7 +81,7 @@ $ ssh-keygen -t rsa -b 4096 -C "ecrivez_votre_nom_ici"
 $ ssh-copy-id pi@adresse_ip_de_votre_raspberry_pi
 ```
 
-#### Configuration d'un résolveur DNS (optionnel)
+#### 2.4) Configuration d'un résolveur DNS (optionnel)
 
 Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session.
 
@@ -101,7 +104,7 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 
 ---
 
-### Installation de la machine virtuelle de développement
+### 3) Installation de la machine virtuelle de développement
 
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
@@ -111,7 +114,7 @@ Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours,
 
 ---
 
-### Installation de l'environnement de compilation croisée
+### 4) Installation de l'environnement de compilation croisée
 
 Le Raspberry Pi possède un processeur dont l'architecture (ARM) diffère de celle de votre ordinateur (x86-64). Vous ne pouvez donc pas directement transférer un exécutable compilé sur votre ordinateur. Il faut plutôt utiliser un environnement de _compilation croisée_, qui permettra à votre ordinateur de générer des binaires compatibles avec l'architecture ARM du Raspberry Pi. Pour mettre en place cet environnement, nous devrons (dans l'ordre) :
 
@@ -124,7 +127,7 @@ Le Raspberry Pi possède un processeur dont l'architecture (ARM) diffère de cel
 Notez que la compilation de cet environnement peut prendre un certain temps.
 
 
-#### 1) Installation de Crosstool-NG
+#### 4.1) Installation de Crosstool-NG
 
 Pour installer Crosstool-NG, récupérez d'abord la version utilisée dans le cours, puis exécutez le script `bootstrap` :
 
@@ -146,7 +149,7 @@ Le paramètre _prefix_ indique l'endroit où les outils de Crosstool-NG doivent 
 > **Note** : il se peut que l'étape du `configure` échoue si vous effectuez l'installation sur votre ordinateur (sans utiliser la machine virtuelle du cours). Assurez-vous dans ce cas [d'avoir installé toutes les dépendances de Crosstool-NG](https://crosstool-ng.github.io/docs/os-setup/). Cette étape a déjà été effectuée pour vous sur les ordinateurs du lab ou avec la machine virtuelle fournie.
 
 
-#### 2) Configuration de l'environnement de compilation croisée
+#### 4.2) Configuration de l'environnement de compilation croisée
 
 Nous allons maintenant préparer la compilation de l'environnement de compilation croisée (oui, c'est méta). Pour ce faire, Crosstool-NG a besoin d'informations sur notre système _cible_ (le Raspberry Pi). Créez tout d'abord un dossier nommé `ct-config-rpi-zero` dans votre dossier personnel et allez à l'intérieur :
 
@@ -235,7 +238,7 @@ Dans la section _Debug facilities_ :
 N'oubliez pas d'enregistrer votre configuration (utilisez les flèches horizontales du clavier pour vous déplacer dans le menu du bas) puis quittez l'utilitaire.
 
 
-#### 3) Compilation et installation de la chaîne de compilation
+#### 4.3) Compilation et installation de la chaîne de compilation
 
 Utilisez la commande suivante pour lancer la compilation :
 
@@ -250,7 +253,7 @@ Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un do
 * `bin/`, qui contient des exécutables x86-64 capables de générer du code machine ARM. Assurez-vous que ce dossier soit dans votre chemin d'exécution (PATH). Lorsque nous voudrons compiler un programme vers un binaire ARM, nous n'utiliserons donc pas `gcc` (qui compilerait en x86-64), mais bien `arm-raspbian-linux-gnueabihf-gcc`
 * `arm-raspbian-linux-gnueabihf/sysroot`, qui contient les librairies et en-têtes des librairies centrales au système (libc, binutils, etc.). C'est là que le compilateur et l'éditeur de liens iront chercher les informations dont ils ont besoin.
 
-#### 4) Synchronisation avec le Raspberry Pi
+#### 4.4) Synchronisation avec le Raspberry Pi
 
 > **Important** : attendez que l'étape précédente soit _terminée sans erreurs_ avant de continuer.
 
@@ -284,7 +287,13 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 > Vous devrez effectuer cette synchronisation _à chaque fois_ que vous ajouterez une librairie ou mettrez à jour votre système sur le Raspberry Pi.
 
-#### 5) Préparation d'une configuration CMake
+---
+
+### 5) Configuration de l'environnement de développement
+
+Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://code.visualstudio.com/updates/v1_19) (ci-après abbrévié VSC). Utilisez la version 1.19 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
+
+#### 5.1) Préparation d'une configuration CMake
 
 [CMake](https://cmake.org/cmake/help/v3.10) est un outil permettant de mettre en place une chaîne de compilation efficace et portable. Nous allons l'utiliser dans le cadre du cours afin d'automatiser la compilation et l'édition de liens des TP. Pour ce faire, créez un nouveau fichier dans `arm-cross-comp-env/`, nommé `rpi-zero-w-toolchain.cmake` et insérez-y le contenu suivant :
 
@@ -317,13 +326,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 Nous réutiliserons cette configuration générique pour tous les projets du cours. Nous verrons plus loin comment la lier aux dits projets.
 
----
-
-### Configuration du projet du TP1
-
-Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://code.visualstudio.com/updates/v1_19) (ci-après abbrévié VSC). Utilisez la version 1.19 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
-
-#### Installer les extensions requises
+#### 5.2) Installer les extensions requises par VSC
 
 Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++" et installez le premier résultat.
 
@@ -334,12 +337,17 @@ Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de V
 
 <img src="img/vsc_3.png" style="width:410px"/>
 
-
 > **Vous devez installer les extensions suivantes :** `C/C++`, `CMake`, `CMake Tools` et `Native Debug`.
 
 > Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
-#### Création d'un nouveau projet
+---
+
+### 6) Configuration du projet du laboratoire
+
+Nous allons maintenant configurer un nouveau projet pour ce laboratoire.
+
+#### 6.1) Création d'un nouveau projet
 
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
@@ -362,7 +370,7 @@ VSC (et son extension C/C++) fournit plusieurs utilitaires pour faciliter la pro
 <img src="img/vsc_incpaths.png" style="width:710px"/>
 -->
 
-#### Compilation croisée
+#### 6.2) Compilation croisée
 
 Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VSC, allez dans le menu `Afficher`, puis `Palette de commandes`.
 
@@ -371,15 +379,13 @@ Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VS
 Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `CMake` (remarquez comment VSC modifie ses suggestions au fur et à mesure), puis sélectionnez `CMake Build`. VSC vous demandera alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci.
 
 
-#### Exécution et débogage
+#### 6.3) Exécution et débogage
 
 Si la compilation se termine avec succès, vous pouvez maintenant passer à l'étape de l'exécution du programme. Ici, nous cherchons à exécuter le programme sur le Raspberry Pi, mais en vous permettant de voir sa sortie et de le contrôler depuis votre ordinateur. Nous vous fournissons des scripts permettant de configurer VSC à cet effet. Vous devez cependant préalablement configurer un paramètre important. Dans le fichier `.vscode/tasks.json`, remplacez `adresse_de_votre_raspberry_pi` par l'adresse (IP ou DNS) effective de votre Raspberry Pi. Faites de même dans le fichier `.vscode/launch.json`, en conservant toutefois le `:4567` qui suit l'adresse du Raspberry Pi.
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
 
-
-
-#### Correction des bogues
+#### 6.4) Correction des bogues
 
 À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
 
@@ -402,7 +408,7 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ---
 
-### Modalités d'évaluation
+### 7) Modalités d'évaluation
 
 Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques dans une visioconférence Zoom. Cette évaluation sera faite lors des séances de laboratoire du **29 janvier 2021** et du **5 février 2021**. Ce travail compte pour **5%** de la note totale du cours.
 
@@ -416,7 +422,7 @@ Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pt
 
 ---
 
-### Ressources et lectures connexes
+### 8) Ressources et lectures connexes
 
 * [Duck DNS](https://www.duckdns.org/)
 * La [documentation de Raspbian](https://www.raspbian.org/RaspbianDocumentation), la distribution Linux sur laquelle est basée l'image du cours.
