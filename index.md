@@ -108,7 +108,15 @@ Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours,
 
 <!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
 * Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2021.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
-* Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes.
+* Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
+
+Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .div.
+Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Other* et *Debian (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
+
+Vous pouvez ensuite la configurer avec *Clic-droit/Configuration...*.
+Sous *Système/Processeur*, choisissez le nombre de CPU à allouer.
+Sous *Affichage/Écran*, Ajustez la mémoire vidéo et *Activer l'accélération 3D*.
+La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
 
 ---
 
