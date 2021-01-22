@@ -1,4 +1,4 @@
-title: "Laboratoire 1"
+title: "GIF-3004 : Laboratoire 1"
 name: "Christian Gagné"
 email: christian.gagne@gel.ulaval.ca
 
@@ -26,8 +26,10 @@ defaults:
         - title: "Systèmes embarqués temps réel - GIF-3004"
           image: https://setr-ulaval.github.io/img/UL-logo.svg
           image_alt: "Université Laval"
-          url: https://setr-ulaval.github.io
-        - title: "GEL-GIF"
-          url: https://www.gelgif.ulaval.ca/
-        - title: "Université Laval"
-          url: https://www.ulaval.ca/
+          children:
+            - title: "Site GIF-3004"
+              url: https://setr-ulaval.github.io
+            - title: "GEL-GIF"
+              url: https://www.gelgif.ulaval.ca/
+            - title: "Université Laval"
+              url: https://www.ulaval.ca/
