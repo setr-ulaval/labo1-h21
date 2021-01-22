@@ -33,13 +33,26 @@ Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous de
 
 ### 2.2. Réseau sans fil
 
-Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connecte à votre réseau sans fil. La façon la plus simple est d'utiliser l'outil `raspi-config`.
+Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connecte à votre réseau sans fil.
+Créer ou modifiez le fichier de configuration avec la commande `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf`, son contenu doit ressembler à ceci:
 ```
-sudo raspi-config
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=CA
+
+network={
+        ssid="nom_du_reseau"
+        psk="mot_de_passe"
+}
 ```
-Sélectionnez _Localisation Options_ dans le menu et ensuite _WLAN Country_ pour configurer correctement le pays. 
-Il faut ensuite sélectionner dans le menu principal _System Options_ puis _Wireless LAN_, on vous demandera alors de saisir le SSID et le mot de passe de la connection que vous souhaitez utiliser.
-Après avoir saisi saisi ces données, rebootez et utilisez la commande `ifconfig` pour vérifier que vous êtes connecté et connaître votre adresse IP.
+Si ce n'est pas le cas ou que le fichier n'existe pas, recopiez et sauvegardez avec *Ctrl+X*. Vous pouvez alors exécuter 
+```
+sudo killall wpa_supplicant
+sudo wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -d
+```
+Si il n'y a pas eu d'erreur, rebootez, sinon en cas d'erreur de syntaxe, le message sera assez explicite.
+Après redémarrage, vérifiez avec un `ifconfig` que vous êtes bien connecté, vous devriez notamment avoir une adresse IP (*inet* dans la section *wlan0*).
+
 
 <!---
 Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
