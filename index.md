@@ -12,7 +12,6 @@ Ce travail pratique vise les objectifs suivants :
 4. Analyser et déboguer un code C simple;
 5. Se familiariser avec l'utilisation du Raspberry Pi Zero W.
 
----
 
 ## 2. Préparation du Raspberry Pi
 
@@ -113,7 +112,6 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 
 Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez ajouter la ligne `/usr/local/bin/duckdns.sh` au fichier `/etc/rc.local`, juste avant `exit 0`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
 
----
 
 ## 3. Installation de la machine virtuelle de développement
 
@@ -131,7 +129,6 @@ Sous *Système/Processeur*, choisissez le nombre de CPU à allouer.
 Sous *Affichage/Écran*, Ajustez la mémoire vidéo et *Activer l'accélération 3D*.
 La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
 
----
 
 ## 4. Installation de l'environnement de compilation croisée
 
@@ -307,7 +304,6 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 > Vous devrez effectuer cette synchronisation _à chaque fois_ que vous ajouterez une librairie ou mettrez à jour votre système sur le Raspberry Pi.
 
----
 
 ## 5. Configuration de l'environnement de développement
 
@@ -361,7 +357,6 @@ Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de V
 
 > Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
----
 
 ## 6. Configuration du projet du laboratoire
 
@@ -434,7 +429,6 @@ Au vu des résultats de profilage obtenus, pouvez-vous donner le nombre d'appels
 
 Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de la liste différente, et refaites un profilage. Obtenez-vous des résultats différents? Pourquoi?-->
 
----
 
 ## 7. Modalités d'évaluation
 
@@ -448,7 +442,6 @@ Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pt
 * (6 pts) Programme débogué: le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
 * (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
 
----
 
 ## 8. Ressources et lectures connexes
 
