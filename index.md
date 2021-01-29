@@ -405,6 +405,14 @@ Si la compilation se termine avec succès, vous pouvez maintenant passer à l'é
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
 
+À noter toutefois que lors d'un débogage, vous n'aurez pas accès à STDIN ou STDOUT. Aussi pour saisir des données ou voir les sorties du programme, il faut l'exécuter à distance sur le Raspberry Pi (àprès l'avoir synchroniser bien sûr). 
+Pour cela, les commandes 
+```
+rsync -av build/SETR_TP1 pi@addr_pi:projects/laboratoire1
+ssh pi@addr_pi -t ./projects/laboratoire1/SETR_TP1
+``` 
+à exécuter depuis la racine du laboratoire pourraient vous être utiles (veillez à bien remplacer `addr_pi` par l'adresse IP de votre Raspberry).
+
 ### 6.4. Correction des bogues
 
 À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
